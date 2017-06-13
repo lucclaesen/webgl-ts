@@ -15,23 +15,27 @@ export function run() {
     var fShader = utils.createFragmentShaderFromSource(fshaderSource);
     var program =  utils.createProgram(vShader, fShader);
 
-    // Since our vertex shader simply copies the inputted values, we need to provide clip space
-    // coordinates directly. Usually, it is the vertex shader's job to output clip space positions. 
+
+    // This time, we provide vertices with screen coordinates. (0, 0) is bottom left.
+    // It is the responsability of the vertex shader to compute clip space coordinates.
     var somePoints = [
-        0,      0,          // triangle 1 
-        0,      0.5, 
-        0.7,    0,
-        0.7,    0,          // triangle2
-        0.7,    0.5,
-        0,      0.5
+        375,      88,          // triangle 1 
+        375,      138, 
+        450,      88
     ];
 
     const vertexSize = 2;
     utils.setInputVertices(program, somePoints, vertexSize);
 
+
+
     reSize(canvas);
     gl.viewport(0, 0, canvas.width, canvas.height);
     utils.clearCanvas();
+
+    var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+    gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+
 
 
     // The actual draw instruction sets up gl to draw triangles. This tells gl to take 3 consecutive 
