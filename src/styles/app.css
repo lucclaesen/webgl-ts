@@ -2,6 +2,6 @@ body {
     background-color: bisque;
 }
 
-:local(.bordered) {
-    border: solid black 1px;
+canvas {
+    border: solid 1px black;
 }
