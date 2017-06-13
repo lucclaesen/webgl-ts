@@ -17,12 +17,19 @@ export default class GlUtils {
         if (!script) {
             throw new Error(`Could not load shader sources from a non existent script ${shaderScriptId}.`);
         }
-        return this.createShaderFromScript(script, shaderType);
+        return this.createShaderFromSource(script.text, shaderType);
     }
 
+    public createVertexShaderFromSource(source: string) {
+        return this.createShaderFromSource(source, this.context.VERTEX_SHADER);
+    }
 
-    private createShaderFromScript(
-        shaderScript: HTMLScriptElement, 
+    public createFragmentShaderFromSource(source: string) {
+        return this.createShaderFromSource(source, this.context.FRAGMENT_SHADER);
+    }
+
+    private createShaderFromSource(
+        source: string, 
         shaderType: number): WebGLProgram {    
         if (shaderType !== this.context.VERTEX_SHADER &&
             shaderType !== this.context.FRAGMENT_SHADER) {
@@ -30,7 +37,7 @@ export default class GlUtils {
         }
 
         var shader = this.context.createShader(shaderType);
-        this.context.shaderSource(shader, shaderScript.text);
+        this.context.shaderSource(shader, source);
         this.context.compileShader(shader);
 
         // status check

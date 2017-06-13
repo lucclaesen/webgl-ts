@@ -2,21 +2,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Webgl Application</title>
-    <script id="vshader" type="x-shader/x-vertex">
-        attribute vec4 a_position;
-
-        void main() {
-            // dummy code: in real life, there is matrix multiplication here
-            gl_Position = a_position;
-        }
-    </script>
-    <script id="fshader" type="x-shader/x-fragment">
-        precision mediump float;
-
-        void main() {
-            gl_FragColor = vec4(1, 0, 0.5, 1);
-        }
-    </script>
 </head>
 <body>
     <h1>Simple webgl</h1>

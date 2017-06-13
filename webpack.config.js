@@ -170,7 +170,7 @@ const configFactory = {
     addGLSLSupport(options) {
         this.config.module.rules.push({
             test: /\.glsl$/,
-            loader: "webpack-glsl"
+            loader: "webpack-glsl-loader"
         });
         return this;
     }
