@@ -59,7 +59,7 @@ export function run() {
     /**
      * Feed the buffer
      */
-    drawRandomTriangles(gl, colorUniformLocation, 10);
+    drawRandomTriangles(gl, colorUniformLocation, 1);
 }
 
 /**
@@ -83,6 +83,8 @@ function addTriangleVerticesToBuffer(
     const x1 = x, y1 = y;
     const x2 = x + width, y2 = y1;
     const x3 = x, y3 = y + height;
+
+    console.log(`drawing (${x1}, ${y1}), (${x2}, ${y2}), (${x3}, ${y3}).`);
 
     const coordinates = new Float32Array([
         x1, y1,

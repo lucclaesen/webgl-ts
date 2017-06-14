@@ -48,19 +48,15 @@ export function loadShader(
 
 
 /**
- * Creates a program, attaches shaders, binds attrib locations, links the
- * program and calls useProgram.
+ * Creates a program, attaches shaders and links the
+ * program.
  * @param shaders The shaders to attach
- * @param attribs An array of attribs names. Locations will be assigned by index if not passed in
- * @param locations The locations for the attributes. A parallel array to opt_attribs letting you assign locations.
  * @param errorCallback callback for errors. By default it just prints an error to the console
  *        on error. If you want something else pass an callback. It's passed an error message.
  */
 export function createProgram(
       gl: WebGLRenderingContext, 
       shaders: WebGLShader[], 
-      attribs?: string[], 
-      locations?: number[], 
       errorCallback?: (string) => void): WebGLProgram {
     
     var errFn = errorCallback || error;
@@ -68,16 +64,7 @@ export function createProgram(
     shaders.forEach(function(shader) {
       gl.attachShader(program, shader);
     });
-    
-    if (attribs) {
-      attribs.forEach(function(attrib, ndx) {
-        gl.bindAttribLocation(
-            program,
-            (locations ? locations[ndx] : ndx),
-            attrib);
-      });
-    }
-
+  
     gl.linkProgram(program);
 
     // Check the link status
@@ -93,3 +80,27 @@ export function createProgram(
     return program;
 }
 
+
+/**
+ * Resizes the canvas of the given context to the given width and
+ * height. Besides directly setting width and height properties, it
+ * is ensured that gl's viewport is adapted to the new canvas size.
+ * @param gl 
+ * @param width 
+ * @param height 
+ */
+export function resizeCanvas(
+  gl: WebGLRenderingContext, 
+  width: number, 
+  height: number): void {
+
+    const canvas = gl.canvas;
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+
+      gl.viewport(0, 0, width, height);
+    }
+
+}
