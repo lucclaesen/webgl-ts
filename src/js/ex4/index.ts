@@ -8,29 +8,104 @@ export function run() {
     const gl = canvas.getContext("webgl");
     const vShader = glUtils.loadShader(gl, vshaderSource, gl.VERTEX_SHADER);
     const fShader = glUtils.loadShader(gl, fshaderSource, gl.FRAGMENT_SHADER);
-    const program = glUtils.createProgram(gl, [vShader, fShader]);
+    const program = createProgram(gl, vShader, fShader);
 
-    const positionArrayBuffer = createArrayBuffer2d(gl, program, "a_position");
-    const resolutionUniform = createUniform2(gl, program, "u_resolution");
-    const colorUniform = createUniform4(gl, program, "u_color");
+    const positionArrayBuffer = program.createArrayBuffer2d("a_position");
+    const resolutionUniform = program.createUniform2("u_resolution");
+    const colorUniform = program.createUniform4("u_color");
 
     // draw
+    program.draw(() => {
+        const triangles = [
+            300,    300,
+            300,    600,
+            600,    300,
+            150,    150,
+            150,    300,
+            300,    150
+        ];
+        positionArrayBuffer.push(triangles);
+        resolutionUniform.set(canvas.width, canvas.height);
+        colorUniform.set(0.2, 0.4, 0.4, 1);
+    });
+}
 
-    gl.useProgram(program);
-    const triangles = [
-        300,    300,
-        300,    600,
-        600,    300,
-        150,    150,
-        150,    300,
-        300,    150
-    ];
-    positionArrayBuffer.push(triangles);
-    resolutionUniform.set(canvas.width, canvas.height);
-    colorUniform.set(0.2, 0.4, 0.4, 1);
+function createProgram(
+    gl: WebGLRenderingContext, 
+    vertexShader: WebGLShader, 
+    fragmentShader: WebGLShader): IProgram {
+    
+        return new GlProgram(gl, vertexShader, fragmentShader);
+}
 
-    glUtils.resizeCanvas(gl, canvas.clientWidth, canvas.clientHeight);
-    positionArrayBuffer.drawTriangles();
+interface IProgram {
+    createArrayBuffer2d(name: string): IArrayBuffer2d;
+    createUniform2(name: string): IUniform2;
+    createUniform4(name: string): IUniform4;
+    draw(render: ()=>void): void;
+}
+
+class GlProgram implements IProgram {
+    
+    private program: WebGLProgram;
+    private arrayBuffer: ArrayBuffer2D;
+
+    constructor(
+        private gl: WebGLRenderingContext, 
+        private vertexShader: WebGLShader, 
+        private fragmentShader: WebGLShader) {
+            this.program = gl.createProgram();
+            this.gl.attachShader(this.program, vertexShader);
+            this.gl.attachShader(this.program, fragmentShader);
+            this.gl.linkProgram(this.program);
+        
+            var linked = this.gl.getProgramParameter(this.program, gl.LINK_STATUS);
+            if (!linked) {
+                var lastError = this.gl.getProgramInfoLog(this.program);
+                console.log("Error in program linking:" + lastError);
+
+                this.gl.deleteProgram(this.program);
+                throw new Error("Unable to link the program");
+            }
+    }
+
+    public createArrayBuffer2d(name: string): IArrayBuffer2d {
+        const buff = this.gl.createBuffer();
+        this.gl.bindBuffer(this.g.ARRAY_BUFFER, buff);
+        const positionAttribute = this.gl.getAttribLocation(this.program, name);
+
+        this.gl.vertexAttribPointer(positionAttribute, 2, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.enableVertexAttribArray(positionAttribute);
+        this.arrayBuffer = new ArrayBuffer2D(this.gl);
+        return this.arrayBuffer;
+    }        
+    
+    public createUniform2(name: string) {
+        const uniformLocation = this.gl.getUniformLocation(this.program, name);
+        return {
+            set: function(x: number, y: number) {
+                this.gl.uniform2f(uniformLocation, x, y);
+            }
+        };
+    }
+
+    public createUniform4(name: string) {
+        const uniformLocation = this.gl.getUniformLocation(this.program, name);
+        return {
+            set: function(x: number, y: number, z: number, w: number) {
+                this.gl.uniform4f(uniformLocation, x, y, z, w);
+            }   
+        };
+    }
+
+    public draw(render: ()=>void): void {
+        this.gl.useProgram(this.program);
+        render();
+        glUtils.resizeCanvas(this.gl, this.gl.canvas.clientWidth, this.gl.canvas.clientHeight);
+        this.arrayBuffer.drawTriangles();
+    }
+
 }
 
 /**
@@ -56,58 +131,6 @@ interface IUniform2 {
 interface IUniform4 {
     set(x: number, y: number, z: number, w: number): void;
 }
-
-/**
- * A factory function that returns a uniform that can be filled with x and y values.
- * @param gl 
- * @param program 
- * @param nameInShader 
- */
-function createUniform2(
-    gl: WebGLRenderingContext, 
-    program: WebGLProgram, 
-    nameInShader: string) : IUniform2 {
-    const uniformLocation = gl.getUniformLocation(program, nameInShader);
-    return {
-        set: function(x: number, y: number) {
-            gl.uniform2f(uniformLocation, x, y);
-        }
-    }
-}
-
-function createUniform4(
-    gl: WebGLRenderingContext, 
-    program: WebGLProgram, 
-    nameInShader: string): IUniform4 {
-    const uniformLocation = gl.getUniformLocation(program, nameInShader);
-    return {
-        set: function(x: number, y: number, z: number, w: number) {
-            gl.uniform4f(uniformLocation, x, y, z, w);
-        }
-    }
-}
-
-/**
- * Creates an array buffer for passing 2D float vertices to the vertex shader.
- * @param gl 
- * @param program 
- * @param nameInShader 
- */
-function createArrayBuffer2d(
-    gl: WebGLRenderingContext, 
-    program: WebGLProgram, 
-    nameInShader: string): IArrayBuffer2d {
-
-    const buff = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buff);
-    const positionAttribute = gl.getAttribLocation(program, nameInShader);
-
-    gl.vertexAttribPointer(positionAttribute, 2, gl.FLOAT, false, 0, 0);
-
-    gl.enableVertexAttribArray(positionAttribute);
-    return new ArrayBuffer2D(gl);
-}
-
 
 class ArrayBuffer2D implements IArrayBuffer2d {
     private coordinates: number[];
