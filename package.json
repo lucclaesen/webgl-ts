@@ -18,6 +18,7 @@
   "devDependencies": {
     "@types/chai": "^3.4.35",
     "@types/jquery": "^2.0.46",
+    "@types/knockout": "^3.4.40",
     "@types/mocha": "^2.2.39",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
@@ -48,6 +49,7 @@
     "yargs": "^6.6.0"
   },
   "dependencies": {
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "knockout": "^3.4.2"
   }
 }

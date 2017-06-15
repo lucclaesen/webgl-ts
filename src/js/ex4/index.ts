@@ -54,24 +54,25 @@ class GlProgram implements IProgram {
         private gl: WebGLRenderingContext, 
         private vertexShader: WebGLShader, 
         private fragmentShader: WebGLShader) {
-            this.program = gl.createProgram();
-            this.gl.attachShader(this.program, vertexShader);
-            this.gl.attachShader(this.program, fragmentShader);
-            this.gl.linkProgram(this.program);
-        
-            var linked = this.gl.getProgramParameter(this.program, gl.LINK_STATUS);
-            if (!linked) {
-                var lastError = this.gl.getProgramInfoLog(this.program);
-                console.log("Error in program linking:" + lastError);
 
-                this.gl.deleteProgram(this.program);
-                throw new Error("Unable to link the program");
-            }
+        this.program = gl.createProgram();
+        this.gl.attachShader(this.program, vertexShader);
+        this.gl.attachShader(this.program, fragmentShader);
+        this.gl.linkProgram(this.program);
+    
+        var linked = this.gl.getProgramParameter(this.program, gl.LINK_STATUS);
+        if (!linked) {
+            var lastError = this.gl.getProgramInfoLog(this.program);
+            console.log("Error in program linking:" + lastError);
+
+            this.gl.deleteProgram(this.program);
+            throw new Error("Unable to link the program");
+        }
     }
 
     public createArrayBuffer2d(name: string): IArrayBuffer2d {
         const buff = this.gl.createBuffer();
-        this.gl.bindBuffer(this.g.ARRAY_BUFFER, buff);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buff);
         const positionAttribute = this.gl.getAttribLocation(this.program, name);
 
         this.gl.vertexAttribPointer(positionAttribute, 2, this.gl.FLOAT, false, 0, 0);
@@ -84,7 +85,7 @@ class GlProgram implements IProgram {
     public createUniform2(name: string) {
         const uniformLocation = this.gl.getUniformLocation(this.program, name);
         return {
-            set: function(x: number, y: number) {
+            set: (x: number, y: number) => {
                 this.gl.uniform2f(uniformLocation, x, y);
             }
         };
@@ -93,7 +94,7 @@ class GlProgram implements IProgram {
     public createUniform4(name: string) {
         const uniformLocation = this.gl.getUniformLocation(this.program, name);
         return {
-            set: function(x: number, y: number, z: number, w: number) {
+            set: (x: number, y: number, z: number, w: number) => {
                 this.gl.uniform4f(uniformLocation, x, y, z, w);
             }   
         };
