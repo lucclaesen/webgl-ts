@@ -2,6 +2,19 @@ body {
     background-color: bisque;
 }
 
+#canvas-frame {
+    width: 750px;
+    margin: 0 auto;
+    position: relative;
+}
+
 canvas {
     border: solid 1px black;
+}
+
+#gl-controls {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(200, 200, 200, 0.7);
 }

@@ -5,7 +5,25 @@
 </head>
 <body>
     <h1>Simple webgl</h1>
-    <div id="app"></div>
-    <canvas id="myCanvas" width="750" height="600"></canvas>
+    <div id="app">
+        <div id="canvas-frame">
+            <div id="gl-controls" data-bind="template: { name: 'gl-controls-template', data: glControls}"></div>
+            <canvas id="myCanvas" width="750" height="600"></canvas>
+        </div>
+    </div>
+    <script id="gl-controls-template" type="text/html">
+        <div id="gl-controls">
+            <table>
+                <tr>
+                    <td>x:</td>
+                    <td><input type="range" min="-50" max="50" class="gl-control" data-bind="textinput: x"></td>
+                </tr>
+                <tr>
+                    <td>y:</td>
+                    <td><input type="range" min="-50" max="50" class="gl-control" data-bind="textinput: y"></td>
+                </tr>
+            </table>
+        </div>
+    </script>
 </body>
 </html>

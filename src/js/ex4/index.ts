@@ -1,6 +1,11 @@
 import * as glUtils from "../gl-utils";
+import $ = require("jquery");
+import GlControlsViewModel from "./GlControlsViewModel";
+import ko = require("knockout");
+
 var vshaderSource = require("./glsl/vertex.glsl") as string;
 var fshaderSource = require("./glsl/fragment.glsl") as string;
+
 
 export function run() {
 
@@ -13,21 +18,39 @@ export function run() {
     const positionArrayBuffer = program.createArrayBuffer2d("a_position");
     const resolutionUniform = program.createUniform2("u_resolution");
     const colorUniform = program.createUniform4("u_color");
+    const translationUniform = program.createUniform2("u_translate");
 
-    // draw
-    program.draw(() => {
-        const triangles = [
-            300,    300,
-            300,    600,
-            600,    300,
-            150,    150,
-            150,    300,
-            300,    150
-        ];
-        positionArrayBuffer.push(triangles);
-        resolutionUniform.set(canvas.width, canvas.height);
-        colorUniform.set(0.2, 0.4, 0.4, 1);
+    
+
+    function draw() {
+        program.draw(() => {
+            const triangles = [
+                300,    300,
+                300,    600,
+                600,    300,
+                150,    150,
+                150,    300,
+                300,    150
+            ];
+            positionArrayBuffer.push(triangles);
+            resolutionUniform.set(canvas.width, canvas.height);
+            colorUniform.set(0.2, 0.4, 0.4, 1);
+        });
+    };
+
+    const glControls = new GlControlsViewModel();
+    glControls.subscribe((x, y) => {
+        translationUniform.set(x, y);
+        draw();
     });
+
+    const viewModel = {
+        glControls: glControls
+    };
+
+    ko.applyBindings(viewModel);
+
+    draw();
 }
 
 function createProgram(
