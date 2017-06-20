@@ -16,34 +16,35 @@ export function run() {
     const program = createProgram(gl, vShader, fShader);
 
     const positionArrayBuffer = program.createArrayBuffer2d("a_position");
-    const resolutionUniform = program.createUniform2("u_resolution");
     const colorUniform = program.createUniform4("u_color");
     const translationUniform = program.createUniform2("u_translate");
     const rotationUniform = program.createUniform2("u_rotate");
+    const scaleUniform = program.createUniform2("u_scale");
     
     let translationVector = [0, 0];
-    let rotationVector = [1, 0];
+    let rotationVector = getRotationMatrix(0);
+    let scaleVector = [1, 1];
 
     function draw() {
         program.draw(() => {
             const triangles = [
-                375,      300,
-                375+375/2,    300,
-                375,    450
+                0,      0,
+                0.5,    0,
+                0,     0.5
             ];
             positionArrayBuffer.push(triangles);
-            resolutionUniform.set(canvas.width, canvas.height);
             colorUniform.set(0.2, 0.4, 0.4, 1);
             translationUniform.setv(translationVector);
             rotationUniform.setv(rotationVector);
+            scaleUniform.setv(scaleVector);
         });
     };
 
     const glControls = new GlControlsViewModel();
-    glControls.onChanged((x, y, angle) => {
+    glControls.onChanged((x, y, angle, sx, sy) => {
         translationVector = [x, y];
-        const rotationMatrix = getRotationMatrix(angle);
-        rotationVector = [rotationMatrix.x, rotationMatrix.y];
+        rotationVector = getRotationMatrix(angle);
+        scaleVector = [sx, sy];
         draw();
     });
 
@@ -62,12 +63,12 @@ interface IVector2 {
     y: number
 }
 
-function getRotationMatrix(angleDegrees: number): IVector2 {
+function getRotationMatrix(angleDegrees: number): number[] {
     const degreeRadians = angleDegrees * Math.PI / 180;
-    return {
-        x: Math.cos(degreeRadians),
-        y: Math.sin(degreeRadians)
-    };
+    return [
+        Math.cos(degreeRadians),
+        Math.sin(degreeRadians)
+    ];
 }
 
 function createProgram(
@@ -145,8 +146,10 @@ class GlProgram implements IProgram {
 
     public draw(render: ()=>void): void {
         this.gl.useProgram(this.program);
-        render();
         glUtils.resizeCanvas(this.gl, this.gl.canvas.clientWidth, this.gl.canvas.clientHeight);
+        render();
+        this.gl.clearColor(0, 0, 0, 0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.arrayBuffer.drawTriangles();
     }
 

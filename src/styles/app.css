@@ -10,6 +10,8 @@ body {
 
 canvas {
     border: solid 1px black;
+    width: 750px;
+    height: 600px;
 }
 
 #gl-controls {

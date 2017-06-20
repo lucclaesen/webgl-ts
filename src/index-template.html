@@ -8,7 +8,7 @@
     <div id="app">
         <div id="canvas-frame">
             <div id="gl-controls" data-bind="template: { name: 'gl-controls-template', data: glControls}"></div>
-            <canvas id="myCanvas" width="750" height="600"></canvas>
+            <canvas id="myCanvas"></canvas>
         </div>
     </div>
     <script id="gl-controls-template" type="text/html">
@@ -16,15 +16,23 @@
             <table>
                 <tr>
                     <td>x:</td>
-                    <td><input type="range" min="-50" max="50" class="gl-control" data-bind="textinput: x"></td>
+                    <td><input type="range" min="-100" max="100" class="gl-control" data-bind="textinput: x"></td>
                 </tr>
                 <tr>
                     <td>y:</td>
-                    <td><input type="range" min="-50" max="50" class="gl-control" data-bind="textinput: y"></td>
+                    <td><input type="range" min="-100" max="100" class="gl-control" data-bind="textinput: y"></td>
                 </tr>
                 <tr>
                     <td>angle:</td>
                     <td><input type="range" min="0" max="360" class="gl-control" data-bind="textinput: angle"></td>
+                </tr>
+                <tr>
+                    <td>sx:</td>
+                    <td><input type="range" min="-200" max="200" class="gl-control" data-bind="textinput: sx"></td>
+                </tr>
+                <tr>
+                    <td>sy:</td>
+                    <td><input type="range" min="-200" max="200" class="gl-control" data-bind="textinput: sy"></td>
                 </tr>
             </table>
         </div>
