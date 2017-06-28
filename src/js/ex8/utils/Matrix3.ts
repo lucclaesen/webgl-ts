@@ -12,6 +12,40 @@ export default class M3 {
     public multiplyWith(other: M3){
         return new M3(multiply(this.els, other.els));
     }
+
+    public get elements() {
+        return this.els;
+    }
+
+    public static getIdentity(): M3 {
+        return new M3(identity);
+    }
+
+    public static getTranslation(tx: number, ty: number): M3 {
+        return new M3([
+            1, 0, 0,
+            0, 1, 0,
+            tx, ty, 1
+        ]);
+    }
+
+    public static getRotation(thetaRad: number): M3 {
+        var c = Math.cos(thetaRad);
+        var s = Math.sin(thetaRad);
+        return new M3([
+            c, -s, 0,
+            s, c, 0,
+            0, 0, 1
+        ]);
+    }
+
+    public static getScale(sx: number, sy: number): M3 {
+        return new M3([
+            sx, 0, 0,
+            0, sy, 0,
+            0, 0, 1
+        ]);
+    }
 }
 
 const identity = [

@@ -2,6 +2,9 @@ import IProgram from "./IProgram";
 import ArrayBuffer2d from "./ArrayBuffer2d";
 import IArrayBuffer2d from "./IArrayBuffer2d";
 import IUniform2 from "./IUniform2";
+import IUniform4 from "./IUniform4";
+import IUniformMatrix3 from "./IUniformMatrix3";
+import Matrix3 from "./Matrix3";
 
 export default class GlProgram implements IProgram {
     
@@ -54,13 +57,22 @@ export default class GlProgram implements IProgram {
     }
 
 
-    public createUniform4(name: string) {
+    public createUniform4(name: string) : IUniform4 {
         const uniformLocation = this.gl.getUniformLocation(this.program, name);
         return {
             set: (x: number, y: number, z: number, w: number) => {
                 this.gl.uniform4f(uniformLocation, x, y, z, w);
             }   
         };
+    }
+
+    public createUniformMatrix3(name: string) : IUniformMatrix3 {
+        const uniformLocation = this.gl.getUniformLocation(this.program, name);
+        return {
+            set: (m3: Matrix3) => {
+                this.gl.uniformMatrix3fv(uniformLocation, false, m3.elements);
+            }   
+        }; 
     }
 
     public draw(render: ()=>void): void {

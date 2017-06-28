@@ -22,17 +22,11 @@ export function run() {
 
     const positionArrayBuffer = program.createArrayBuffer2d("a_position");
     const colorUniform = program.createUniform4("u_color");
-    const translationUniform = program.createUniform2("u_translate");
-    const rotationUniform = program.createUniform2("u_rotate");
-    const scaleUniform = program.createUniform2("u_scale");
-    
+    const matrixUniform = program.createUniformMatrix3("u_matrix");
+
     let translationVector = [0, 0];
-    let rotationVector = getRotationCoordinates(0);
+    let rotationangle = 0;
     let scaleVector = [1, 1];
-
-    let id = new M3();
-    let res = id.multiplyWith(new M3());
-
 
     function draw() {
         program.draw(() => {
@@ -43,16 +37,18 @@ export function run() {
             ];
             positionArrayBuffer.push(triangles);
             colorUniform.set(0.2, 0.4, 0.4, 1);
-            translationUniform.setv(translationVector);
-            rotationUniform.setv(rotationVector);
-            scaleUniform.setv(scaleVector);
+
+            var translation = M3.getTranslation(translationVector[0], translationVector[1]);
+            var rotation = M3.getRotation(rotationangle * Math.PI / 180);
+            var scale = M3.getScale(scaleVector[0], scaleVector[1]);
+            matrixUniform.set(translation.multiplyWith(rotation.multiplyWith(scale)));
         });
     };
 
     const glControls = new GlControlsViewModel();
     glControls.onChanged((x, y, angle, sx, sy) => {
         translationVector = [x, y];
-        rotationVector = getRotationCoordinates(angle);
+        rotationangle = angle;
         scaleVector = [sx, sy];
         draw();
     });
