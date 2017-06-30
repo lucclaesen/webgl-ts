@@ -22,9 +22,21 @@
                     <td>y:</td>
                     <td><input type="range" min="-100" max="100" class="gl-control" data-bind="textinput: y"></td>
                 </tr>
-                <tr>
-                    <td>angle:</td>
-                    <td><input type="range" min="0" max="360" class="gl-control" data-bind="textinput: angle"></td>
+                <tr data-bind="visible: dim == 3">
+                    <td>z:</td>
+                    <td><input type="range" min="-100" max="100" class="gl-control" data-bind="textinput: z"></td>
+                </tr>
+                <tr data-bind="visible: dim == 3">
+                    <td>ax:</td>
+                    <td><input type="range" min="0" max="360" class="gl-control" data-bind="textinput: ax"></td>
+                </tr>
+                <tr data-bind="visible: dim == 3">
+                    <td>ay:</td>
+                    <td><input type="range" min="0" max="360" class="gl-control" data-bind="textinput: ay"></td>
+                </tr>
+                 <tr>
+                    <td>az:</td>
+                    <td><input type="range" min="0" max="360" class="gl-control" data-bind="textinput: az"></td>
                 </tr>
                 <tr>
                     <td>sx:</td>
@@ -33,6 +45,10 @@
                 <tr>
                     <td>sy:</td>
                     <td><input type="range" min="-200" max="200" class="gl-control" data-bind="textinput: sy"></td>
+                </tr>
+                <tr data-bind="visible: dim == 3">
+                    <td>sz:</td>
+                    <td><input type="range" min="-200" max="200" class="gl-control" data-bind="textinput: sz"></td>
                 </tr>
             </table>
         </div>

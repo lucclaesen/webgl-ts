@@ -8,6 +8,7 @@ import * as ex6 from "./ex6/index";
 import * as ex7 from "./ex7/index";
 import * as ex8 from "./ex8/index";
 import * as ex9 from "./ex9/index";
+import * as ex10 from "./ex10/index";
 
 
 // ex1.run();
@@ -18,4 +19,5 @@ import * as ex9 from "./ex9/index";
 // ex6.run();
 // ex7.run();
 // ex8.run();
-ex9.run();
+// ex9.run();
+ex10.run();
