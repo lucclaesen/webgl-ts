@@ -4,6 +4,7 @@ import IArrayBuffer from "./IArrayBuffer";
 import IUniform2 from "./IUniform2";
 import IUniform4 from "./IUniform4";
 import M3  from "./Matrix3";
+import M4 from "./Matrix4";
 
 function createProgram(
     gl: WebGLRenderingContext, 
@@ -67,5 +68,6 @@ export {
     IArrayBuffer,
     IUniform2,
     IUniform4,
-    M3
+    M3,
+    M4
 };

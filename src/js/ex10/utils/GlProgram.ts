@@ -5,6 +5,8 @@ import IUniform2 from "./IUniform2";
 import IUniform4 from "./IUniform4";
 import IUniformMatrix3 from "./IUniformMatrix3";
 import Matrix3 from "./Matrix3";
+import IUniformMatrix4 from "./IUniformMatrix4";
+import Matrix4 from "./Matrix4";
 
 export default class GlProgram implements IProgram {
     
@@ -77,6 +79,15 @@ export default class GlProgram implements IProgram {
         return {
             set: (m3: Matrix3) => {
                 this.gl.uniformMatrix3fv(uniformLocation, false, m3.elements);
+            }   
+        }; 
+    }
+
+    public createUniformMatrix4(name: string) : IUniformMatrix4 {
+        const uniformLocation = this.gl.getUniformLocation(this.program, name);
+        return {
+            set: (m4: Matrix4) => {
+                this.gl.uniformMatrix4fv(uniformLocation, false, m4.elements);
             }   
         }; 
     }
