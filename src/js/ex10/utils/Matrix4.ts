@@ -31,6 +31,7 @@ export default class M4 {
     }
 
     public static getRotation(ax: number, ay: number, az: number): M4 {
+        // like three.js, z-rotation is applied first, then y and finally z ...
         return new M4(rotationZ(az))
             .multiplyWith(new M4(rotationY(ay)))
             .multiplyWith(new M4(rotationX(ax)));

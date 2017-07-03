@@ -31,17 +31,10 @@ export function run() {
     function draw() {
         program.draw(() => {
             
-            // given the coordinate space after quasi-projection:
-            // draw with respect to canvas size, with 0 top left, 
-            // X+ from 0 to canvas.with horizontal
-            // Y+ from 0 to canvas height vertical
-            const triangles = [
-                375,            300,          0,          // center canvas
-                375+0.5*375,    300,          0,          // down left
-                375,            300-0.5*300,  0          // upper right
-            ];
-
-            positionArrayBuffer.push(triangles);
+            const up = createBox( {x: 100, y: 500, z: 0}, 100, -400, 100);
+            const top = createBox({x: 200, y: 100, z: 0}, 200, 100, 100);
+            const middle = createBox({x: 200, y: 300, z: 0}, 150, 100, 100);
+            positionArrayBuffer.push(up.concat(top).concat(middle));
             colorUniform.set(0.2, 0.4, 0.4, 1);
 
             const m = M4.getProjection(canvas.width, canvas.height, 400)
@@ -65,3 +58,68 @@ export function run() {
     ko.applyBindings({ glControls: glControls});
     draw();
 }
+
+interface IVector3 {
+        x: number;
+        y: number;
+        z: number;
+    }
+
+    function createBox(origin: IVector3, width: number, height: number, depth: number): Array<number> {
+        const res = [];
+        // front rectangle
+        res.push(
+            origin.x,           origin.y,           origin.z,
+            origin.x + width,   origin.y,           origin.z,
+            origin.x,           origin.y + height,  origin.z,
+            origin.x + width,   origin.y,           origin.z,
+            origin.x,           origin.y + height,  origin.z,
+            origin.x + width,   origin.y + height,  origin.z
+        );
+        // back rectangle
+        res.push(
+            origin.x,           origin.y,           origin.z + depth,
+            origin.x + width,   origin.y,           origin.z + depth,
+            origin.x,           origin.y + height,  origin.z + depth,
+            origin.x + width,   origin.y,           origin.z + depth,
+            origin.x,           origin.y + height,  origin.z + depth,
+            origin.x + width,   origin.y + height,  origin.z + depth
+        );
+        // left side
+        res.push(
+            origin.x,           origin.y,           origin.z,
+            origin.x,           origin.y,           origin.z + depth,
+            origin.x,           origin.y + height,  origin.z,
+            origin.x,           origin.y,           origin.z + depth,
+            origin.x,           origin.y + height,  origin.z,
+            origin.x,           origin.y + height,  origin.z + depth
+        );
+        // right side
+        res.push(
+            origin.x + width,    origin.y,          origin.z,
+            origin.x + width,    origin.y,          origin.z + depth,
+            origin.x + width,    origin.y + height, origin.z,
+            origin.x + width,    origin.y,          origin.z + depth,
+            origin.x + width,    origin.y + height, origin.z,
+            origin.x + width,    origin.y + height, origin.z + depth
+        );
+        // top
+        res.push(
+            origin.x,           origin.y + height,  origin.z,
+            origin.x,           origin.y + height,  origin.z + depth,
+            origin.x + width,   origin.y + height,  origin.z,
+            origin.x,           origin.y + height,  origin.z + depth,
+            origin.x + width,   origin.y + height,  origin.z,
+            origin.x + width,   origin.y + height,  origin.z + depth
+        );
+        // bottom
+        res.push(
+            origin.x,           origin.y,  origin.z,
+            origin.x,           origin.y,  origin.z + depth,
+            origin.x + width,   origin.y,  origin.z,
+            origin.x,           origin.y,  origin.z + depth,
+            origin.x + width,   origin.y,  origin.z,
+            origin.x + width,   origin.y,  origin.z + depth
+        );
+        return res;
+    }
